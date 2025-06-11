@@ -43,7 +43,7 @@ public class PostgreSQL extends DBFacade {
     @Override
     public List<String> getDbUserTables(Connection con) throws SQLException {
         List<String> retVal = new ArrayList<>();
-        try(ResultSet tables = con.getMetaData().getTables(con.getCatalog(), con.getSchema(), "%", new String[]{"TABLE"})){
+        try(ResultSet tables = con.getMetaData().getTables(con.getCatalog(), con.getSchema(), "%", new String[]{"TABLE","PARTITIONED TABLE"})){
             while(tables.next()){
                 String tableName = tables.getString(3);
                 retVal.add(tableName);
@@ -63,7 +63,7 @@ public class PostgreSQL extends DBFacade {
                         "                           c.relkind, c.relname AS relation \n" +
                         "                    FROM pg_class c JOIN pg_namespace n ON n.oid = c.relnamespace ),\n" +
                         "     sequences AS (SELECT oid, nsp, name FROM fq_objects WHERE relkind = 'S'),  \n" +
-                        "     tables    AS (SELECT oid, nsp, name FROM fq_objects WHERE relkind = 'r' )  \n" +
+                        "     tables    AS (SELECT oid, nsp, name FROM fq_objects WHERE relkind = 'r' or relkind = 'p' )  \n" +
                         "SELECT\n" +
                         "       t.name AS tableName, \n" +
                         "       s.name AS sequence \n" +
