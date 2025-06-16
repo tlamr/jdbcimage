@@ -47,6 +47,7 @@ public class PostgreSQL extends DBFacade {
             while(tables.next()){
                 String tableName = tables.getString(3);
                 retVal.add(tableName);
+                System.out.println("Found table "+tableName);
             }
         }
         return retVal;
