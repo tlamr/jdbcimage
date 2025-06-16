@@ -43,11 +43,13 @@ public class PostgreSQL extends DBFacade {
     @Override
     public List<String> getDbUserTables(Connection con) throws SQLException {
         List<String> retVal = new ArrayList<>();
-        try(ResultSet tables = con.getMetaData().getTables(con.getCatalog(), con.getSchema(), "%", new String[]{"TABLE","PARTITIONED TABLE"})){
+        try(ResultSet tables = con.getMetaData().getTables(con.getCatalog(), con.getSchema(), "%", new String[]{"TABLE"})){
             while(tables.next()){
                 String tableName = tables.getString(3);
                 retVal.add(tableName);
-                System.out.println("Found table "+tableName);
+                if (tableName.endsWith("_p0") || tableName.endsWith("_pdefault")) {
+                    retVal.add(tableName.substring(0, tableName.lastIndexOf('_')));
+                }
             }
         }
         return retVal;
